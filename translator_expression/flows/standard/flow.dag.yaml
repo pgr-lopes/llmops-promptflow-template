@@ -1,0 +1,30 @@
+id: web_classification
+name: Web Classification
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  article:
+    type: string
+    default: ""
+    is_chat_input: false
+outputs:
+  Translated_Article:
+    type: string
+    reference: ${translate_with_llm.output}
+nodes:
+- name: translate_with_llm
+  type: llm
+  source:
+    type: code
+    path: classify_with_llm.jinja2
+  inputs:
+    deployment_name: suno
+    temperature: 0.3
+    top_p: 0.8
+    max_tokens: 1200
+    response_format:
+      type: text
+    article: ${inputs.article}
+  connection: aoai-eastus-pelope
+  api: chat
+  use_variants: false

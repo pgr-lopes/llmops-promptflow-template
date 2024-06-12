@@ -1,0 +1,33 @@
+id: web_classification
+name: Web Classification
+inputs:
+  article:
+    type: string
+    default: https://www.microsoft.com/en-us/store/collections/xboxseriessconsoles?icid=CNav_Xbox_Series_S
+    is_chat_input: false
+outputs:
+  Translated_Article:
+    type: string
+    reference: ${translate_with_llm.output}
+nodes:
+- name: translate_with_llm
+  type: llm
+  source:
+    type: code
+    path: classify_with_llm.jinja2
+  inputs:
+    deployment_name: suno
+    temperature: 0.3
+    top_p: 0.8
+    max_tokens: 1200
+    response_format:
+      type: text
+    article: ${inputs.article}
+  provider: AzureOpenAI
+  connection: aoaieastuspelope
+  api: chat
+  module: promptflow.tools.aoai
+  use_variants: false
+node_variants: {}
+environment:
+  python_requirements_txt: requirements.txt
